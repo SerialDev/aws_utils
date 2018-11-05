@@ -1,7 +1,7 @@
 
 import boto3
 import datetime
-from core import *
+from .core import start_session
 
 
 class sqs_utils(object):
@@ -15,10 +15,8 @@ class sqs_utils(object):
         self.resource = self.session.resource("sqs")
         self.current_id = self.session.client("sts").get_caller_identity()["Account"]
 
-
     def create_queue(self, queue_name, fifo_queue, delay_seconds=0,
-                     message_size=262_144, message_retention =
-                     345_600, content_deduplication=False, ):
+                     message_size=262_144, message_retention=345_600, content_deduplication=False, ):
         if fifo_queue == True:
              attributes = {
                  "DelaySeconds" : str(delay_seconds),
