@@ -1,4 +1,4 @@
-from core import *
+from .core import start_session
 import boto3
 import datetime
 
@@ -12,10 +12,9 @@ class ec2_utils(object):
         self.client = self.session.client("ec2")
         self.resource = self.session.resource("ec2")
 
-
     def instance_usage_dict(self, i, ):
         instance = {}
-        #Info
+        # Info
         instance["info"] = {}
         instance["info"]["id"] = i.id
         instance["info"]["instance_id"] = i.instance_id
@@ -24,7 +23,8 @@ class ec2_utils(object):
         instance["info"]["key_name"] = i.key_name
         instance["info"]["key_pair.key_fingerprint"] = i.key_pair.key_fingerprint
         instance["info"]["launch_time"] = i.launch_time
-        instance["info"]["time_since_launch"] = (datetime.datetime.now() - i.launch_time.replace(tzinfo=None)).total_seconds() # time since launch
+        instance["info"]["time_since_launch"] = (datetime.datetime.now(
+        ) - i.launch_time.replace(tzinfo=None)).total_seconds()  # time since launch
         instance["info"]["monitoring"] = i.monitoring
         instance["info"]["architecture"] = i.architecture
         instance["info"]["cpu_options"] = i.cpu_options
@@ -66,7 +66,7 @@ class ec2_utils(object):
         instance["info"]["image"]["tags"] = i.image.tags
         instance["info"]["image"]["virtualization_type"] = i.image.virtualization_type
 
-        #actions
+        # actions
         instance["action"] = {}
         instance["action"]["start"] = i.start
         instance["action"]["reboot"] = i.reboot
@@ -84,10 +84,9 @@ class ec2_utils(object):
 
         return instance
 
-
     def get_instance_types(self,):
         instance_type = {}
-        instance_type["general_purpose"] ={}
+        instance_type["general_purpose"] = {}
         instance_type["general_purpose"]["t2"] = {}
         instance_type["general_purpose"]["t2"]["nano"] = "t2.nano"
         instance_type["general_purpose"]["t2"]["micro"] = "t2.micro"
@@ -217,9 +216,8 @@ class ec2_utils(object):
         instance_type["accelerated_computing"]["p3"]["16xlarge"] = "p3.16xlarge"
         return instance_type
 
-
     def get_images(self, name="*", ami="*"):
-        filter = [{"Name":"name",
+        filter = [{"Name": "name",
                    "Values": [name],
                    "Name":"image-id", "Values":[ami]}]
         images = self.resource.images.filter(Filters=filter)
@@ -243,7 +241,6 @@ class ec2_utils(object):
             image_list.append(image_info)
         return image_list
 
-
     def get_keypairs(self, name=""):
         pairs = self.client.describe_key_pairs()['KeyPairs']
         result = []
@@ -251,7 +248,6 @@ class ec2_utils(object):
             if name in i['KeyName']:
                 result.append(i['KeyName'])
         return result
-
 
     def get_subnet_id(self, name="*", id="*"):
         filter = [{"Name": "tag:Name", "Values":[name],
